@@ -1,55 +1,38 @@
-# Prerequisites
-*.d
+# Vivado generated files
 
-# Object files
-*.o
-*.ko
-*.obj
-*.elf
+# Cache / temp
+*.cache/
+*.hw/
+*.sim/
 
-# Linker output
-*.ilk
-*.map
-*.exp
+# IP build artifacts
+*.ip_user_files/
+*.gen/
+*.runs/
 
-# Precompiled Headers
-*.gch
-*.pch
+# Logs
+*.log
+*.jou
+*.str
 
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
+# Backup files
+*.backup
+*.bak
 
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
+# Temporary files
+*~
+*.tmp
 
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
+# Simulation outputs
+*.wdb
+*.wcfg
+*.vcd
 
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
+# Vivado internal files
+.Xil/
+*.pb
+*.zip
 
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
-
-# debug information files
-*.dwo
+# OS files
+.DS_Store
+Thumbs.db
