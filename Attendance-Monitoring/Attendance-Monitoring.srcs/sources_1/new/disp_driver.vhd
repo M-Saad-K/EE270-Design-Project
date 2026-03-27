@@ -33,7 +33,14 @@ entity disp_driver is
 end disp_driver;
 
 architecture Behavioral of disp_driver is
+    component num_to_segments is
+    Port (num : in integer;
+          seg : out std_logic_vector(0 to 6));
+    end component;
+    
+    for converter : num_to_segments use entity work.num_to_segments(Behavioral);
 begin
     -- TODO: turn number into output for 4x 7-segment displays
+    
 
 end Behavioral;

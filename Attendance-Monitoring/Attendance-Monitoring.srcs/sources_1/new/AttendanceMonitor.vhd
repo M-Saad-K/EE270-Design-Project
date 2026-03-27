@@ -48,6 +48,14 @@ entity AttendanceMonitor is
 end AttendanceMonitor;
 
 architecture Behavioral of AttendanceMonitor is
+    component disp_driver is
+        Port ( count : in integer;
+               segments : out std_logic_vector(0 to 6);  -- segments of the display to light up
+               disp_choice : out std_logic_vector(0 to 3));
+    end component;
+    
+    for DD : disp_driver use entity work.disp_driver(Behavioral);
+
 begin
     -- set the count back to 0 if reset pressed
     watch_rst: process (rst)
@@ -80,5 +88,8 @@ begin
         end process;
     end generate;
     
+    -- call disp_driver 
+    DD: disp_driver port map(count => total_count, segments => segments, disp_choice => disp_choice);
+    -- map segments and disp_driver from display_driver to output
 
 end Behavioral;
