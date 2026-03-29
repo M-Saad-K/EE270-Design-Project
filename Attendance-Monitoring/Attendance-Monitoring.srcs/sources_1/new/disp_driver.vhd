@@ -32,7 +32,10 @@ entity disp_driver is
            disp_choice : out std_logic_vector(0 to 3));
 end disp_driver;
 
+
+
 architecture Behavioral of disp_driver is
+
     component num_to_segments is
     Port (num : in integer;
           seg : out std_logic_vector(0 to 6));
@@ -53,38 +56,43 @@ begin
     -- Relate the display values to each display
     
     -- Use the mod operator to get digits
-    getSegs : process is
+    getSegs : process(count) is -- Change at every count adjustment
     
-    variable digits : int_arr := (others => '0'); -- This is for holding the digits
-    variable allSegments : seg_arr := (others => std_logic_vector <= 0000); -- TODO: resolve this issue
+    variable digits : int_arr := (others => 0); -- This is for holding the digits
+    variable allSegments : seg_arr := (others => (others => '0')); -- TODO: resolve this issue
     -- This temp will hold the count
-    variable temp : integer := count;
+    variable temp : integer := 0;
     
     begin
     
-    for i is 3 downto 0 loop
+    temp := count;
     
+    getSegs_GEN : for i in 3 downto 0 generate
+    
+    -- TO DO, fix the mod 10 issue hat is not synthesisable
     digits(i) := temp mod 10; -- mod the current
     temp := temp/10; -- Change the current
     -- After this we probably have an array of the digits like this [0, 9, 3, 1]
-
+    
+    
 	-- Next add them to the num_segment and save their result
     -- We will send each digit into the num_seg one by one
     -- Then we will save the num_segement but for the display choice
-    port map(num => digits(i), seg => allSegments(i)); -- relate to the segments!
+	num_to_seg_inst: converter
+	port map (num => digits(i), seg => allSegments(i)); -- relate to the segments!
     
-    end loop;
+	end generate;
     
     -- in theory we would have now gotten an array of all the segements corresponding to the numbers
     -- hopefully
     -- Now we map them the segment
     -- And to the display choice
-    for disp_choice is 0 to 3 loop
-    segments = allSegments(disp_choice)
-    end loop
+    for j is 0 to 3 loop
+    segments <= allSegments(disp_choice);
+    disp_choice <= (j => '0', others => '1');
+    end loop;
     
-    
-    end process
+    end process;
     
 
 end Behavioral;
