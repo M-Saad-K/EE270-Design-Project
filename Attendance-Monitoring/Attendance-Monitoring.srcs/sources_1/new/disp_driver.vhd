@@ -47,35 +47,29 @@ architecture Behavioral of disp_driver is
         	  digitVectorArray : out int_array_4x1); -- Geting the output
 	end component;
     
-    for seg_converter : num_to_segments use entity work.num_to_segments(Behavioral);
-    for convertsToDigit : digit_getter use entity work.digit_getter(main);
+    for intToDigits : digit_getter use entity work.digit_getter(main);
+    signal digits : int_array_4x1 := (others => 0); -- This is for holding the digits
+     
+    type segment_array_4x1 is array (0 to 3) of std_logic_vector(0 to 6);
+    signal segment_array: segment_array_4x1;
     
 begin
     
-    -- Count will hold the current population
-    -- Separate the components of the count
-    -- Feed each unit into the num_to_seg and get the displays
-    -- Relate the display values to each display
+    -- Split the number into 4 seperate digits   
+    intToDigits: digit_getter port map(currNum => count, digitVectorArray => digits);
     
-    getSegs : process(count) is -- Change at every count adjustment
-        variable digits : int_array_4x1 := (others => 0); -- This is for holding the digits
+    -- Calculate what segemnts will create each digit
+    GEN: for i in 0 to 3 generate
+       calcSegs: entity work.num_to_segments(Behavioral) port map (num => digits(i), seg => segment_array(i));
+    end generate;
     
+    -- Display each digit on the display
+    dispDigits : process (count) is
     begin
-        -- this gets the digits as an array  
-        convertsToDigit: digit_getter port map(currNum => count, digitalVectorArray => digits); 
-        -- So now we have an array of ints: e.g. (0, 9, 9, 9)
-        
-        GEN: for i in 0 to 3 generate
-            -- Next add them to the num_segment and save their result
-            -- We will send each digit into the num_seg one by one
-            -- Then we will save the num_segement but for the display choice
-            seg_converter: num_to_segments port map (num => digits(i), seg => segments); -- relate to the segments!
+        for i in 0 to 3 loop
+            segments <= segment_array(i);
             disp_choice <= (i => '0', others => '1');
-            
-        end generate;
-        
-    
+        end loop;
     end process;
-    
 
 end Behavioral;
