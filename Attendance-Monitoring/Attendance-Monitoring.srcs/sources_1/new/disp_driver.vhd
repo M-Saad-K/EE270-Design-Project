@@ -55,9 +55,9 @@ architecture Behavioral of disp_driver is
     type segment_array_4x1 is array (0 to 3) of std_logic_vector(0 to 6);
     signal segment_array: segment_array_4x1;
 
-    signal active_digit : integer range 0 to 3 := 0;
+    signal active_digit : unsigned(1 downto 0) := (others => '0');
     -- switch to the next display every 2^16 clock cycles, (1525Hz)
-    signal clk_count  : unsigned(15 downto 0) := (others => '0');
+    signal clk_count_disp : unsigned(15 downto 0) := (others => '0');
     
 begin
     
@@ -69,28 +69,25 @@ begin
        calcSegs: entity work.num_to_segments(Behavioral) port map (num => digits(i), seg => segment_array(i));
     end generate;
     
-    -- Time-multiplex the 4 displays from the FPGA clock.
+    -- move to writing to the next digit every 2^16 clock cycles
     dispDigits : process(clk) is
     begin
         if rising_edge(clk) then
-            clk_count <= clk_count + 1;
+            clk_count_disp <= clk_count_disp + 1;
 
             -- Move to next digit after correct amount of clock cycles counted
-            if clk_count = 0 then
-                if active_digit = 3 then
-                    active_digit <= 0;
-                else
-                    active_digit <= active_digit + 1;
-                end if;
+            if clk_count_disp = 0 then
+               active_digit <= active_digit + 1;
             end if;
-        end if;
+        end if; 
     end process;
-
-    segments <= segment_array(active_digit);
+    
+    -- write the segments to the selected display
+    segments <= segment_array(TO_INTEGER(active_digit));
     with active_digit select
-        disp_choice <= "0111" when 0,
-                       "1011" when 1,
-                       "1101" when 2,
+        disp_choice <= "0111" when "00",
+                       "1011" when "01",
+                       "1101" when "10",
                        "1110" when others;
 
 end Behavioral;
