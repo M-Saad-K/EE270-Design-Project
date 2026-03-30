@@ -32,6 +32,9 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
+-- import custom array type
+use work.Common.int_array_4x1;
+
 entity AttendanceMonitor is
     Port ( clk, rst : in STD_LOGIC;
            enable: in std_logic_vector(0 to 3); -- input for each section
@@ -41,7 +44,7 @@ entity AttendanceMonitor is
            
     constant section_num : integer := 4;
     constant section_capacity : integer := 250;
-    constant section_cap_warn : integer := section_capacity * 90 / 100;
+    constant section_cap_warn : integer := section_capacity * 90 / 100; -- 90%
     
     signal total_count : integer := 0;
     
@@ -54,39 +57,42 @@ architecture Behavioral of AttendanceMonitor is
                disp_choice : out std_logic_vector(0 to 3));
     end component;
     
+    signal section_counts : int_array_4x1 := (others => 0);
     for DD : disp_driver use entity work.disp_driver(Behavioral);
 
-begin
-    -- set the count back to 0 if reset pressed
-    watch_rst: process (rst)
-    begin
-        total_count <= 0;
-    end process;
-    
+begin    
     -- counter for each section
     COUNT_GEN: for i in 0 to section_num-1 generate
-        watch_clk_rst: process (clk, rst)
-        variable count : integer := 0;
+        watch_clk_rst: process (clk, rst) is
         begin
             -- if reset pressed set count to zero and deactivate any warning lights
             if rst = '1' then
-                count := 0;
+                section_counts(i) <= 0;
                 warning_lights(i) <= '0';
             
             -- increment the count
             elsif rising_edge(clk) then
-                if enable(i) = '1' and count < section_capacity then
-                    count := count + 1;
-                    total_count <= total_count + 1;
+                if enable(i) = '1' and section_counts(i) < section_capacity then
+                    section_counts(i) <= section_counts(i) + 1;
                     
                     -- if capacity > 90% turn on warning light
-                    if count > section_cap_warn then
+                    if section_counts(i) > section_cap_warn then
                         warning_lights(i) <= '1';
                     end if;
                 end if;
             end if;
         end process;
     end generate;
+    
+    sum_counts : process (clk) is
+    begin 
+        total_count <= section_counts(0) + section_counts(1) + section_counts(2) + section_counts(3);
+--        total_count <= 0;
+--        for i in 0 to section_num-1 loop
+--            total_count <= total_count + section_counts(i);
+--        end loop;
+    
+    end process;
     
     -- call disp_driver 
     DD: disp_driver port map(count => total_count, segments => segments, disp_choice => disp_choice);
