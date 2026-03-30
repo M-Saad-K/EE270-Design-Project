@@ -60,8 +60,8 @@ architecture Behavioral of AttendanceMonitor is
     
     signal section_counts : int_array_4x1 := (others => 0);
     for DD : disp_driver use entity work.disp_driver(Behavioral);
-    -- Update the number every 2^23 clock cycles, ~10 Hz
-    signal clk_count : unsigned(22 downto 0) := (others => '0');
+    -- Update each section's count every 2^23 clock cycles, ~10 Hz
+    signal clk_count_number : unsigned(22 downto 0) := (others => '0');
 
 begin
     -- counter for each section
@@ -75,9 +75,9 @@ begin
             
             -- increment the count
             elsif rising_edge(clk) then 
-                clk_count <= clk_count + 1; -- count clock cycles, will = 0 on overflow
+                clk_count_number <= clk_count_number + 1; -- count clock cycles, will = 0 on overflow
                 
-                if clk_count = 0 and enable(i) = '1' and section_counts(i) < section_capacity then
+                if clk_count_number = 0 and enable(i) = '1' and section_counts(i) < section_capacity then
                     section_counts(i) <= section_counts(i) + 1;
                     
                     -- if capacity > 90% turn on warning light
