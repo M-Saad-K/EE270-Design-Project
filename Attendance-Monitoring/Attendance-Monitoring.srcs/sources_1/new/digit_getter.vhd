@@ -29,7 +29,7 @@ entity digit_getter is
           digitVectorArray : out int_array_4x1); -- each digit of number
 
 end digit_getter;
- 
+
 architecture main of digit_getter is
 begin
 

@@ -64,11 +64,12 @@ begin
     end generate;
     
     -- Display each digit on the display
-    dispDigits : process (count) is
+    dispDigits : process is
     begin
         for i in 0 to 3 loop
             segments <= segment_array(i);
             disp_choice <= (i => '0', others => '1');
+            wait for 2ns;
         end loop;
     end process;
 
