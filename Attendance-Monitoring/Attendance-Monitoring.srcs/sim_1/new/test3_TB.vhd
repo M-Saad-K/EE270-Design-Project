@@ -68,8 +68,8 @@ begin
   
         enable_in(0) <= '1'; 
         enable_in(1) <= '1';
-        enable_in(3) <= '1'; 
-        enable_in(4) <= '1';
+        enable_in(2) <= '1'; 
+        enable_in(3) <= '1';
 
     end process;
     
