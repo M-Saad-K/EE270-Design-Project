@@ -31,11 +31,11 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity AttendanceMonitorTB is
+entity finlay_sTB is
 --  Port ( );
-end AttendanceMonitorTB;
+end finlay_sTB;
 
-architecture Behavioral of AttendanceMonitorTB is
+architecture Behavioral of finlay_sTB is
     component AttendanceMonitor is
         Port ( clk, rst : in STD_LOGIC;
                enable: in std_logic_vector(0 to 3); -- input for each section
