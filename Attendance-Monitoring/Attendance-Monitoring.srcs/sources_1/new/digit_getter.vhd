@@ -21,18 +21,16 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 
-type vector_array is array (0 to 3) of std_logic_vector(0 downto 3); -- This is an array for 
--- std_logic_vector
+-- import custom array types
+use work.Common.int_array_4x1;
 
 entity digit_getter is
-    Port (
-        currNum : in integer; -- Taking in the current Number
-        digitVectorArray : out vector_array -- Geting the output
-    );
+    Port (currNum : in integer; -- Taking in the current Number
+          digitVectorArray : out int_array_4x1); -- each digit of number
+
 end digit_getter;
-
+ 
 architecture main of digit_getter is
-
 begin
 
 	getDigits : process(currNum) is
@@ -58,10 +56,10 @@ begin
         digit3 := temp; -- Just add the single unit
 
 		-- All add to the output array!
-        digitVectorArray(0) <= std_logic_vector(to_unsigned(digit0, 4));
-        digitVectorArray(1) <= std_logic_vector(to_unsigned(digit1, 4));
-        digitVectorArray(2) <= std_logic_vector(to_unsigned(digit2, 4));
-        digitVectorArray(3) <= std_logic_vector(to_unsigned(digit3, 4));
+        digitVectorArray(0) <= digit0;
+        digitVectorArray(1) <= digit1;
+        digitVectorArray(2) <= digit2;
+        digitVectorArray(3) <= digit3;
 	end process;
 
 end main;

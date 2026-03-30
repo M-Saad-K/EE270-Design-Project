@@ -26,87 +26,54 @@ use IEEE.STD_LOGIC_1164.ALL;
 -- arithmetic functions with Signed or Unsigned values
 -- use IEEE.NUMERIC_STD.ALL;
 
+-- import custom array types
+use work.Common.int_array_4x1;
+
 entity disp_driver is
     Port ( count : in integer;
-           segments : out std_logic_vector(0 to 6);  -- segments of the display to light up
-           disp_choice : out std_logic_vector(0 to 3));
+           segments : out std_logic_vector(0 to 6);     -- segments of the display to light up
+           disp_choice : out std_logic_vector(0 to 3)); -- which display to ouput to
 end disp_driver;
 
 
-
 architecture Behavioral of disp_driver is
-
     component num_to_segments is
-    Port (num : in integer;
-          seg : out std_logic_vector(0 to 6));
+        Port (num : in integer;
+              seg : out std_logic_vector(0 to 6));
     end component;
     
     component digit_getter is
-    	Port (
-        	currNum          : in integer; -- Taking in the current Number
-        	digitVectorArray : out vector_array -- Geting the output
-    		);
+    	Port (currNum          : in integer;        -- Taking in the current Number
+        	  digitVectorArray : out int_array_4x1); -- Geting the output
 	end component;
     
     for seg_converter : num_to_segments use entity work.num_to_segments(Behavioral);
-    for dig_converter : digit_getter use entity work.digit_getter(main);
+    for convertsToDigit : digit_getter use entity work.digit_getter(main);
     
-    -- This is for the int array that will hold the numbers
-    type int_arr is array (3 downto 0) of integer;  
-    -- This is for all the array of segements that will hold all total segments
-    type seg_arr is array(3 downto 0) of std_logic_vector(0 to 6);
-    
-    type vector_array is array (0 to 3) of std_logic_vector(0 downto 3);
-    
-	begin
+begin
     
     -- Count will hold the current population
     -- Separate the components of the count
     -- Feed each unit into the num_to_seg and get the displays
     -- Relate the display values to each display
     
-    -- Use the mod operator to get digits
     getSegs : process(count) is -- Change at every count adjustment
-    
-    variable digits : int_arr := (others => 0); -- This is for holding the digits
-    variable allSegments : seg_arr := (others => (others => '0')); -- TODO: resolve this issue
-    -- This temp will hold the count
-    variable temp : integer := 0;
-    -- This is a conversion variable for the vector_array out
-    variable digitArray : vector_array;
+        variable digits : int_array_4x1 := (others => 0); -- This is for holding the digits
     
     begin
-    
-    ConvertsToDigit : dig_converter
-    port map(currNum => count, digitalVectorArray => digitArray); -- this gets the digits as an array 
-    -- (0, std_logic_v(9), std_logic_v(9), std_logic_v(9)) example
-    
-    -- Next we need to convert this array of std_logic_vectors into integers
-    for i is 0 to 3 loop
-    	digit(i) := to_integer(digitalVectorArray(i)); -- Convert the element to an integer 
-        -- store it in digit
-    end loop;
-    
-    -- So now we have an array of ints: (0, 9, 9, 9)
-    
-    getSegs_GEN : for i in 3 downto 0 generate
-     
-	-- Next add them to the num_segment and save their result
-    -- We will send each digit into the num_seg one by one
-    -- Then we will save the num_segement but for the display choice
-	num_to_seg_inst: seg_converter
-	port map (num => digits(i), seg => allSegments(i)); -- relate to the segments!
-    
-	end generate;
-    
-    -- in theory we would have now gotten an array of all the segements corresponding to the numbers
-    -- hopefully
-    -- Now we map them the segment
-    -- And to the display choice
-    for j is 0 to 3 loop
-    segments <= allSegments(disp_choice);
-    disp_choice <= (j => '0', others => '1');
-    end loop;
+        -- this gets the digits as an array  
+        convertsToDigit: digit_getter port map(currNum => count, digitalVectorArray => digits); 
+        -- So now we have an array of ints: e.g. (0, 9, 9, 9)
+        
+        GEN: for i in 0 to 3 generate
+            -- Next add them to the num_segment and save their result
+            -- We will send each digit into the num_seg one by one
+            -- Then we will save the num_segement but for the display choice
+            seg_converter: num_to_segments port map (num => digits(i), seg => segments); -- relate to the segments!
+            disp_choice <= (i => '0', others => '1');
+            
+        end generate;
+        
     
     end process;
     
