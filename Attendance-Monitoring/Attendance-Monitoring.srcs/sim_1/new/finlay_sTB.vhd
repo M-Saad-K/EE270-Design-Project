@@ -31,11 +31,11 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity AttendanceMonitorTB is
+entity finlay_sTB is
 --  Port ( );
-end AttendanceMonitorTB;
+end finlay_sTB;
 
-architecture Behavioral of AttendanceMonitorTB is
+architecture Behavioral of finlay_sTB is
     component AttendanceMonitor is
         Port ( clk, rst : in STD_LOGIC;
                enable: in std_logic_vector(0 to 3); -- input for each section
@@ -56,7 +56,7 @@ begin
 
     clock_gen : process
         begin
-            while now <= 130 ns loop
+            while now <= 3000 ns loop
             clk_in <= '1'; wait for 10 ns;
             clk_in <= '0'; wait for 10 ns;
         end loop;
@@ -67,13 +67,12 @@ begin
     begin
         rst_in <= '1'; wait for 10ns; 
         rst_in <= '0';
-        enable_in(0) <= '1'; wait for 20ns;
-        enable_in(0) <= '0'; enable_in(1) <= '1'; wait for 20ns;
-        enable_in(1) <= '0'; enable_in(2) <= '1'; wait for 20ns;
-        rst_in <= '1';
-        enable_in(2) <= '0'; enable_in(3) <= '1'; wait for 20ns;        
+        enable_in(0) <= '1'; wait for 200ns;
+        enable_in(0) <= '0'; enable_in(1) <= '1'; wait for 200ns;  
+        enable_in(1) <= '0'; enable_in(2) <= '1'; wait for 200ns;        
+        enable_in(2) <= '0'; enable_in(3) <= '1'; wait for 200ns;        
                 
-        rst_in <= '0'; wait for 40ns;
+        rst_in <= '1'; wait for 10ns;
 
     end process;
     
