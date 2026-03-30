@@ -21,6 +21,7 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -30,7 +31,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 use work.Common.int_array_4x1;
 
 entity disp_driver is
-    Port ( count : in integer;
+    Port ( clk : in std_logic;
+           count : in integer;
            segments : out std_logic_vector(0 to 6);     -- segments of the display to light up
            disp_choice : out std_logic_vector(0 to 3)); -- which display to ouput to
 end disp_driver;
@@ -52,6 +54,10 @@ architecture Behavioral of disp_driver is
      
     type segment_array_4x1 is array (0 to 3) of std_logic_vector(0 to 6);
     signal segment_array: segment_array_4x1;
+
+    signal active_digit : integer range 0 to 3 := 0;
+    -- switch to the next display every 2^16 clock cycles, (1525Hz)
+    signal clk_count  : unsigned(15 downto 0) := (others => '0');
     
 begin
     
@@ -63,14 +69,28 @@ begin
        calcSegs: entity work.num_to_segments(Behavioral) port map (num => digits(i), seg => segment_array(i));
     end generate;
     
-    -- Display each digit on the display
-    dispDigits : process is
+    -- Time-multiplex the 4 displays from the FPGA clock.
+    dispDigits : process(clk) is
     begin
-        for i in 0 to 3 loop
-            segments <= segment_array(i);
-            disp_choice <= (i => '0', others => '1');
-            wait for 2ns;
-        end loop;
+        if rising_edge(clk) then
+            clk_count <= clk_count + 1;
+
+            -- Move to next digit after correct amount of clock cycles counted
+            if clk_count = 0 then
+                if active_digit = 3 then
+                    active_digit <= 0;
+                else
+                    active_digit <= active_digit + 1;
+                end if;
+            end if;
+        end if;
     end process;
+
+    segments <= segment_array(active_digit);
+    with active_digit select
+        disp_choice <= "0111" when 0,
+                       "1011" when 1,
+                       "1101" when 2,
+                       "1110" when others;
 
 end Behavioral;

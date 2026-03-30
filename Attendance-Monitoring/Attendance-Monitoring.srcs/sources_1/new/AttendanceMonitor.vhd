@@ -52,15 +52,18 @@ end AttendanceMonitor;
 
 architecture Behavioral of AttendanceMonitor is
     component disp_driver is
-        Port ( count : in integer;
+        Port ( clk : in std_logic;
+               count : in integer;
                segments : out std_logic_vector(0 to 6);  -- segments of the display to light up
                disp_choice : out std_logic_vector(0 to 3));
     end component;
     
     signal section_counts : int_array_4x1 := (others => 0);
     for DD : disp_driver use entity work.disp_driver(Behavioral);
+    -- Update the number every 2^23 clock cycles, ~10 Hz
+    signal clk_count : unsigned(22 downto 0) := (others => '0');
 
-begin    
+begin
     -- counter for each section
     COUNT_GEN: for i in 0 to section_num-1 generate
         watch_clk_rst: process (clk, rst) is
@@ -71,8 +74,10 @@ begin
                 warning_lights(i) <= '0';
             
             -- increment the count
-            elsif rising_edge(clk) then
-                if enable(i) = '1' and section_counts(i) < section_capacity then
+            elsif rising_edge(clk) then 
+                clk_count <= clk_count + 1; -- count clock cycles, will = 0 on overflow
+                
+                if clk_count = 0 and enable(i) = '1' and section_counts(i) < section_capacity then
                     section_counts(i) <= section_counts(i) + 1;
                     
                     -- if capacity > 90% turn on warning light
@@ -84,18 +89,10 @@ begin
         end process;
     end generate;
     
-    sum_counts : process (clk) is
-    begin 
-        total_count <= section_counts(0) + section_counts(1) + section_counts(2) + section_counts(3);
---        total_count <= 0;
---        for i in 0 to section_num-1 loop
---            total_count <= total_count + section_counts(i);
---        end loop;
-    
-    end process;
+    total_count <= section_counts(0) + section_counts(1) + section_counts(2) + section_counts(3);
     
     -- call disp_driver 
-    DD: disp_driver port map(count => total_count, segments => segments, disp_choice => disp_choice);
+    DD: disp_driver port map(clk => clk, count => total_count, segments => segments, disp_choice => disp_choice);
     -- map segments and disp_driver from display_driver to output
 
 end Behavioral;
