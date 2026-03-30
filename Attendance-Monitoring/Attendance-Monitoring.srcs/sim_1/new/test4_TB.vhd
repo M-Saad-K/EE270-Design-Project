@@ -57,8 +57,8 @@ begin
     clock_gen : process
         begin
             while now <= 200 ns loop -- This will run for 200ns, however the count will reach 900 by 130ns. All the warning lights turn on that then success!
-            clk_in <= '1'; wait for 0.28 ns;
-            clk_in <= '0'; wait for 0.28 ns;
+            clk_in <= '1'; wait for 0.29 ns;
+            clk_in <= '0'; wait for 0.29 ns;
         end loop;
         wait;
     end process; 
