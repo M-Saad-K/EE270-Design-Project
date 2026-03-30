@@ -56,7 +56,7 @@ begin
 
     clock_gen : process
         begin
-            while now <= 3000 ns loop
+            while now <= 130 ns loop
             clk_in <= '1'; wait for 10 ns;
             clk_in <= '0'; wait for 10 ns;
         end loop;
@@ -67,12 +67,13 @@ begin
     begin
         rst_in <= '1'; wait for 10ns; 
         rst_in <= '0';
-        enable_in(0) <= '1'; wait for 200ns;
-        enable_in(0) <= '0'; enable_in(1) <= '1'; wait for 200ns;  
-        enable_in(1) <= '0'; enable_in(2) <= '1'; wait for 200ns;        
-        enable_in(2) <= '0'; enable_in(3) <= '1'; wait for 200ns;        
+        enable_in(0) <= '1'; wait for 20ns;
+        enable_in(0) <= '0'; enable_in(1) <= '1'; wait for 20ns;
+        enable_in(1) <= '0'; enable_in(2) <= '1'; wait for 20ns;
+        rst_in <= '1';
+        enable_in(2) <= '0'; enable_in(3) <= '1'; wait for 20ns;        
                 
-        rst_in <= '1'; wait for 10ns;
+        rst_in <= '0'; wait for 40ns;
 
     end process;
     
