@@ -31,11 +31,11 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity finlay_sTB is
+entity test3_TB is
 --  Port ( );
-end finlay_sTB;
+end test3_TB;
 
-architecture Behavioral of finlay_sTB is
+architecture Behavioral of test3_TB is
     component AttendanceMonitor is
         Port ( clk, rst : in STD_LOGIC;
                enable: in std_logic_vector(0 to 3); -- input for each section
@@ -56,23 +56,20 @@ begin
 
     clock_gen : process
         begin
-            while now <= 3000 ns loop
-            clk_in <= '1'; wait for 10 ns;
-            clk_in <= '0'; wait for 10 ns;
+            while now <= 200 ns loop -- This will run for 200ns, however the count will reach 1000 by 130ns. If it remains 1000 for the remaining 70ns, then it is a success!
+            clk_in <= '1'; wait for 0.26 ns;
+            clk_in <= '0'; wait for 0.26 ns;
         end loop;
         wait;
     end process; 
     
     stimuli: process
     begin
-        rst_in <= '1'; wait for 10ns; 
-        rst_in <= '0';
-        enable_in(0) <= '1'; wait for 200ns;
-        enable_in(0) <= '0'; enable_in(1) <= '1'; wait for 200ns;  
-        enable_in(1) <= '0'; enable_in(2) <= '1'; wait for 200ns;        
-        enable_in(2) <= '0'; enable_in(3) <= '1'; wait for 200ns;        
-                
-        rst_in <= '1'; wait for 10ns;
+  
+        enable_in(0) <= '1'; 
+        enable_in(1) <= '1';
+        enable_in(2) <= '1'; 
+        enable_in(3) <= '1';
 
     end process;
     
