@@ -57,7 +57,7 @@ architecture Behavioral of disp_driver is
 
     signal active_digit : unsigned(1 downto 0) := (others => '0');
     -- switch to the next display every 2^16 clock cycles, (1525Hz)
-    signal clk_count_disp : unsigned(15 downto 0) := (others => '0');
+    signal clk_count_disp : unsigned(15 downto 0) := (others => '0'); -- when using testbench, 15 -> 0
     
 begin
     

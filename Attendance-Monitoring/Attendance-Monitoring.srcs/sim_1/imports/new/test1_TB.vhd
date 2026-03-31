@@ -31,11 +31,11 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity test3_TB is
+entity test1_TB is
 --  Port ( );
-end test3_TB;
+end test1_TB;
 
-architecture Behavioral of test3_TB is
+architecture Behavioral of test1_TB is
     component AttendanceMonitor is
         Port ( clk, rst : in STD_LOGIC;
                enable: in std_logic_vector(0 to 3); -- input for each section
@@ -56,20 +56,23 @@ begin
 
     clock_gen : process
         begin
-            while now <= 200 ns loop -- This will run for 200ns, however the count will reach 900 by 130ns. All the warning lights turn on that then success!
-            clk_in <= '1'; wait for 0.29 ns;
-            clk_in <= '0'; wait for 0.29 ns;
+            while true loop
+            clk_in <= '1'; wait for 1 ns;
+            clk_in <= '0'; wait for 1 ns;
         end loop;
         wait;
     end process; 
     
     stimuli: process
     begin
-  
-        enable_in(0) <= '1'; 
-        enable_in(1) <= '1';
-        enable_in(2) <= '1'; 
-        enable_in(3) <= '1';
+        rst_in <= '1'; wait for 10ns;
+        rst_in <= '0';
+        enable_in(0) <= '1'; wait for 2500ns;
+        enable_in(0) <= '0'; enable_in(1) <= '1'; wait for 200ns;  
+        enable_in(1) <= '0'; enable_in(2) <= '1'; wait for 200ns;        
+        enable_in(2) <= '0'; enable_in(3) <= '1'; wait for 200ns;        
+                
+        rst_in <= '1'; wait for 10ns;
 
     end process;
     

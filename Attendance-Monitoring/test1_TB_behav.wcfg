@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="test1_TB_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="common" />
+            <top_module name="test1_TB" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="769.750 ns"></ZoomStartTime>
+      <ZoomEndTime time="851.951 ns"></ZoomEndTime>
+      <Cursor1Time time="810.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="112"></NameColumnWidth>
+      <ValueColumnWidth column_width="61"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="8" />
+   <wvobject fp_name="/test1_TB/rst_in" type="logic">
+      <obj_property name="ElementShortName">rst_in</obj_property>
+      <obj_property name="ObjectShortName">rst_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test1_TB/clk_in" type="logic">
+      <obj_property name="ElementShortName">clk_in</obj_property>
+      <obj_property name="ObjectShortName">clk_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test1_TB/enable_in" type="array">
+      <obj_property name="ElementShortName">enable_in[0:3]</obj_property>
+      <obj_property name="ObjectShortName">enable_in[0:3]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject fp_name="/test1_TB/warning_lights_out" type="array">
+      <obj_property name="ElementShortName">warning_lights_out[0:3]</obj_property>
+      <obj_property name="ObjectShortName">warning_lights_out[0:3]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject fp_name="/test1_TB/segments_out" type="array">
+      <obj_property name="ElementShortName">segments_out[0:6]</obj_property>
+      <obj_property name="ObjectShortName">segments_out[0:6]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject fp_name="/test1_TB/disp_choice_out" type="array">
+      <obj_property name="ElementShortName">disp_choice_out[0:3]</obj_property>
+      <obj_property name="ObjectShortName">disp_choice_out[0:3]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject fp_name="/test1_TB/G1/total_count" type="other">
+      <obj_property name="ElementShortName">total_count</obj_property>
+      <obj_property name="ObjectShortName">total_count</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test1_TB/G1/section_counts" type="array">
+      <obj_property name="ElementShortName">section_counts[0:3]</obj_property>
+      <obj_property name="ObjectShortName">section_counts[0:3]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+</wave_config>

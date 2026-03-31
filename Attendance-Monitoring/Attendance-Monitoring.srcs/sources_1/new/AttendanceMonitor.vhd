@@ -22,11 +22,11 @@
 
 -- Description: 4 sections, each holding 250 people
 -- Tasks:
--- [ ] 4 counters up to 250
--- [ ] 4 lights for 90% full for each section
--- [ ] button to reset attendance to 0
--- [ ] obtain overall attendance figure
--- [ ] display attendance on displays
+-- [x] 4 counters up to 250
+-- [x] 4 lights for 90% full for each section
+-- [x] button to reset attendance to 0
+-- [x] obtain overall attendance figure
+-- [x] display attendance on displays
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -61,7 +61,7 @@ architecture Behavioral of AttendanceMonitor is
     signal section_counts : int_array_4x1 := (others => 0);
     for DD : disp_driver use entity work.disp_driver(Behavioral);
     -- Update each section's count every 2^23 clock cycles, ~10 Hz
-    signal clk_count_number : unsigned(22 downto 0) := (others => '0');
+    signal clk_count_number : unsigned(22 downto 0) := (others => '0'); -- when using testbench, 22 -> 1
 
 begin
     -- counter for each section
